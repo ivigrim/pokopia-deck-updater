@@ -1,0 +1,10 @@
+# Personal inventory of the Deck's files, its backup and temp file. Never publish.
+inventario_deck.json*
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Private notes, in case they end up in this folder
+contexto_*.md
+DOCUMENTACION_*.md
