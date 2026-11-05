@@ -5,8 +5,8 @@ Arma un paquete con **solo los archivos que cambiaron** en la instalación del p
 > **Lee esto primero**
 > - Esta herramienta **no** incluye ni descarga archivos del juego, llaves ni firmware. Para usar el port necesitas tu propia copia extraída del juego, versión 2.0.1a.
 > - No está afiliada a Nintendo, The Pokémon Company, Koei Tecmo ni a los autores del port.
-> - Es una versión temprana (0.x), hecha para una configuración específica. Lee las [Limitaciones](#limitaciones) antes de usarla.
-> - Por ahora los mensajes del programa están en español. Está planeada una opción en inglés.
+> - Es una versión temprana (0.x). Lee las [Limitaciones](#limitaciones) antes de usarla.
+> - Los mensajes del programa están en inglés.
 
 English version: [README.md](README.md)
 
@@ -25,10 +25,10 @@ La herramienta compara la instalación de la PC con lo que tiene la Deck y arma 
 
 ## Qué hace
 
-1. **Revisa el Set up.** Avisa si falta `pkp.exe`, si la caché de shaders no está completa (`shader_cache/spirv/results.tsv`) o si `pkp.exe` no corresponde a la versión del port. Para esto último corre la misma revisión que usa el launcher: `tools/build/pkp_build.py --check`. Si hay avisos, pregunta antes de seguir.
-2. **Lee el inventario.** `inventario_deck.json` anota el tamaño, la fecha y la huella SHA-256 de cada archivo que tiene la Deck. La primera vez se arma a partir de una copia en la PC de la carpeta de la Deck.
+1. **Revisa el Set up.** Avisa si la caché de shaders no está completa (`shader_cache/spirv/results.tsv`) o si `pkp.exe` no corresponde a la versión del port. Para esto último corre la misma revisión que usa el launcher: `tools/build/pkp_build.py --check`. Si hay avisos, pregunta antes de seguir.
+2. **Lee el inventario.** `deck_inventory.json` anota el tamaño, la fecha y la huella SHA-256 de cada archivo que tiene la Deck. La primera vez se arma a partir de una copia en la PC de la carpeta de la Deck.
 3. **Compara** cada archivo de la instalación de la PC con el inventario y muestra qué cambió y cuánto pesa.
-4. **Arma el paquete** (cuando confirmas). Borra el paquete anterior, copia los cambios en una carpeta con fecha, actualiza el inventario y abre la carpeta en el Explorador.
+4. **Arma el paquete** (cuando confirmas). Borra el paquete anterior, copia los cambios en una carpeta con fecha dentro de `packages`, actualiza el inventario y abre la carpeta en el Explorador.
 
 ### Nunca se manda (protegido)
 
@@ -66,13 +66,16 @@ La herramienta compara la instalación de la PC con lo que tiene la Deck y arma 
 
 ## Preparación
 
-1. Pon `actualizar_pokopia.py` y `Actualizar Pokopia.bat` en la misma carpeta.
-2. Abre `actualizar_pokopia.py` con un editor de texto y cambia las tres carpetas del inicio:
-   - `ORIGEN`: tu instalación en la PC, donde corres el Set up y le das Play.
-   - `ENVIO`: donde se arma el paquete. No puede estar dentro de `ORIGEN`.
-   - `ESPEJO_INICIAL`: la copia en la PC de la carpeta de la Deck (solo la primera vez).
+1. Pon `pokopia_deck_updater.py` y `Update_Pokopia.bat` en la misma carpeta, **fuera** de la carpeta del port.
+2. Doble clic en `Update_Pokopia.bat`. La primera vez:
+   - Una ventana te pide la carpeta de tu instalación del port en la PC: donde corriste el Set up (tiene que tener `pkp.exe`).
+   - Si todavía no hay inventario, otra ventana te pide la copia en la PC de la carpeta del port de la Deck. Leerla tarda un rato (~40 minutos para ~25 GB en mi caso) y solo pasa una vez.
 
-El inventario (`inventario_deck.json`) se guarda junto al script. Si mueves el script, mueve el inventario con él.
+Si la ventana no se puede abrir, la herramienta te pide pegar la ruta de la carpeta.
+
+La herramienta guarda junto a ella: `config.json` (la carpeta de tu port), `deck_inventory.json` y su `.bak`, y la carpeta `packages`. Si mueves la herramienta, muévelos con ella. Para elegir otra carpeta del port, borra `config.json`.
+
+**Si vienes de la 0.3.x:** pon los archivos nuevos donde estaban los viejos. Tu `inventario_deck.json` se renombra a `deck_inventory.json` y se convierte solo, así que no se vuelve a armar. Puedes borrar los viejos `actualizar_pokopia.py` y `Actualizar Pokopia.bat`.
 
 ## Uso
 
@@ -81,7 +84,7 @@ En la PC:
 1. Copia la versión nueva del port **encima** de tu instalación de la PC con "Reemplazar" (así se conservan `build\` y la caché de shaders).
 2. Abre el launcher. Si pide Set up, déjalo terminar.
 3. Dale Play una vez. Si hubo shaders faltantes, ciérralo y dale Play otra vez (el segundo arranque los traduce).
-4. Doble clic en `Actualizar Pokopia.bat`.
+4. Doble clic en `Update_Pokopia.bat`.
 
 En la Deck:
 
@@ -94,17 +97,18 @@ Dos reglas aprendidas en el camino:
 
 ## Resultados reales
 
-Mi primera corrida real (5 de noviembre de 2026):
+Mis corridas del 5 de noviembre de 2026:
 
 | | Tiempo | Resultado |
 |---|---|---|
 | Primera vez (armar el inventario + comparar) | ~40 min | 107,323 archivos en el inventario; ~105 mil archivos revisados en la PC |
 | Segunda vez (con el inventario ya armado) | ~1 min | 2 archivos cambiados (388.5 MB) |
+| Corrida sin nada nuevo (0.4.0) | ~25 s | "The Deck is up to date" |
 
 ## Limitaciones
 
-- Las rutas de las carpetas están fijas en el código: hoy está hecho a la medida de un solo usuario.
-- El inventario da por hecho que todo paquete armado se mandó a la Deck. Si armas uno y no lo mandas, restaura `inventario_deck.json.bak`.
+- Del lado de la PC, solo funciona en Windows.
+- El inventario da por hecho que todo paquete armado se mandó a la Deck. Si armas uno y no lo mandas, restaura `deck_inventory.json.bak`.
 - Si cambias archivos en la Deck a mano, el inventario no se entera.
 - No borra en la Deck archivos que una versión nueva del port haya quitado.
 - Copiar el paquete en su lugar dentro de la Deck sigue siendo manual.
@@ -112,12 +116,9 @@ Mi primera corrida real (5 de noviembre de 2026):
 
 ## Ideas para siguientes versiones
 
-- Que pregunte las carpetas la primera vez y las recuerde.
-- Interfaz en inglés.
-- Respaldar `save` automáticamente.
-- Un script del lado de la Deck que aplique el paquete o reconstruya el inventario.
+- Un script del lado de la Deck que respalde `save`, aplique el paquete o reconstruya el inventario.
+- Traer a la PC la carpeta `shader_cache\missing` de la Deck para que el launcher traduzca esos shaders, y devolverlos. La Deck no puede traducirlos sola, porque el launcher no corre ahí.
 - Mandar por red directamente, sin LocalSend.
-- Avisar cuando un paquete trae `pkp_rt.dll` sin `pkp.exe`, o al revés.
 
 ## Hecho con IA
 
@@ -125,4 +126,4 @@ No soy programador; es un proyecto para aprender. Yo aporté el problema, las hi
 
 ## Licencia
 
-[MIT](LICENSE). El script no incluye código del port.
+[MIT](LICENSE). La herramienta no incluye código del port.

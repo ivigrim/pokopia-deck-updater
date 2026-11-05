@@ -5,8 +5,7 @@ Builds an update package with **only the files that changed** in your PC install
 > **Read this first**
 > - This tool does **not** include or download any game files, keys or firmware. To use the port at all you need your own extracted copy of the game, version 2.0.1a.
 > - Not affiliated with Nintendo, The Pokémon Company, Koei Tecmo, or the authors of the port.
-> - Early version (0.x), built for one specific setup. Read [Limitations](#limitations) before using it.
-> - The program's messages are in Spanish for now. An English option is planned.
+> - Early version (0.x). Read [Limitations](#limitations) before using it.
 
 Versión en español: [README.es.md](README.es.md)
 
@@ -25,10 +24,10 @@ This tool compares the PC install with what the Deck has and builds a package wi
 
 ## What it does
 
-1. **Checks Set up.** Warns if `pkp.exe` is missing, if the shader cache is incomplete (`shader_cache/spirv/results.tsv`), or if `pkp.exe` doesn't match the port version. For the last check it runs the same check the launcher uses: `tools/build/pkp_build.py --check`. If there are warnings, it asks before continuing.
-2. **Reads the inventory.** `inventario_deck.json` lists the size, date and SHA-256 hash of every file the Deck has. The first time, it is built from a PC copy of the Deck's folder.
+1. **Checks Set up.** Warns if the shader cache is incomplete (`shader_cache/spirv/results.tsv`) or if `pkp.exe` doesn't match the port version. For the last check it runs the same check the launcher uses: `tools/build/pkp_build.py --check`. If there are warnings, it asks before continuing.
+2. **Reads the inventory.** `deck_inventory.json` lists the size, date and SHA-256 hash of every file the Deck has. The first time, it is built from a PC copy of the Deck's folder.
 3. **Compares** every file in the PC install with the inventory and lists what changed and how much it weighs.
-4. **Builds the package** (after you confirm). Deletes the previous package, copies the changes into a dated folder, updates the inventory and opens the folder in Explorer.
+4. **Builds the package** (after you confirm). Deletes the previous package, copies the changes into a dated folder inside `packages`, updates the inventory and opens the folder in Explorer.
 
 ### Never sent (protected)
 
@@ -66,13 +65,16 @@ This tool compares the PC install with what the Deck has and builds a package wi
 
 ## Setup
 
-1. Put `actualizar_pokopia.py` and `Actualizar Pokopia.bat` in the same folder.
-2. Open `actualizar_pokopia.py` in a text editor and change the three folders at the top:
-   - `ORIGEN`: your PC install, where you run Set up and press Play.
-   - `ENVIO`: where the package is built. It must not be inside `ORIGEN`.
-   - `ESPEJO_INICIAL`: the PC copy of the Deck's folder (first run only).
+1. Put `pokopia_deck_updater.py` and `Update_Pokopia.bat` in the same folder, **outside** the port folder.
+2. Double-click `Update_Pokopia.bat`. The first time:
+   - A window asks for your port install folder on the PC: the one where you ran Set up (it must have `pkp.exe`).
+   - If there is no inventory yet, another window asks for the PC copy of the Deck's port folder. Reading it takes a while (~40 minutes for ~25 GB in my case) and only happens once.
 
-The inventory (`inventario_deck.json`) is saved next to the script. If you move the script, move the inventory with it.
+If the window can't open, the tool asks you to paste the folder path instead.
+
+The tool keeps these next to itself: `config.json` (your port folder), `deck_inventory.json` and its `.bak`, and the `packages` folder. If you move the tool, move them with it. To choose another port folder, delete `config.json`.
+
+**Upgrading from 0.3.x:** put the new files where the old ones were. Your `inventario_deck.json` is renamed to `deck_inventory.json` and converted automatically, so it isn't built again. You can delete the old `actualizar_pokopia.py` and `Actualizar Pokopia.bat`.
 
 ## Usage
 
@@ -81,7 +83,7 @@ On the PC:
 1. Copy the new port version **over** your PC install, choosing "Replace" (this keeps `build\` and the shader cache).
 2. Open the launcher. If it asks for Set up, let it finish.
 3. Press Play once. If there were missing shaders, close it and press Play again (the second launch translates them).
-4. Double-click `Actualizar Pokopia.bat`.
+4. Double-click `Update_Pokopia.bat`.
 
 On the Deck:
 
@@ -94,17 +96,18 @@ Two rules learned along the way:
 
 ## Real results
 
-My first real run (November 5, 2026):
+My runs on November 5, 2026:
 
 | | Time | Result |
 |---|---|---|
 | First run (build inventory + compare) | ~40 min | 107,323 files in the inventory; ~105,000 files checked on the PC |
 | Second run (inventory already built) | ~1 min | 2 changed files (388.5 MB) |
+| Run with nothing new (0.4.0) | ~25 s | "The Deck is up to date" |
 
 ## Limitations
 
-- The folder paths are fixed in the code: right now it is tailored to one user.
-- The inventory assumes every package you build gets sent to the Deck. If you build one and don't send it, restore `inventario_deck.json.bak`.
+- Windows only on the PC side.
+- The inventory assumes every package you build gets sent to the Deck. If you build one and don't send it, restore `deck_inventory.json.bak`.
 - If you change files on the Deck by hand, the inventory doesn't know.
 - It doesn't delete files on the Deck that a new port version removed.
 - Copying the package into place on the Deck is still manual.
@@ -112,12 +115,9 @@ My first real run (November 5, 2026):
 
 ## Ideas for future versions
 
-- Ask for the folders on first run and remember them.
-- English interface.
-- Back up `save` automatically.
-- A script on the Deck side to apply the package or rebuild the inventory.
+- A script on the Deck side to back up `save`, apply the package or rebuild the inventory.
+- Bring the Deck's `shader_cache\missing` to the PC so the launcher can translate those shaders, and send them back. The Deck can't translate them itself, because the launcher doesn't run there.
 - Send over the network directly, without LocalSend.
-- Warn when a package has `pkp_rt.dll` without `pkp.exe`, or the other way around.
 
 ## Made with AI
 
@@ -125,4 +125,4 @@ I'm not a programmer; this is a learning project. I brought the problem, the hyp
 
 ## License
 
-[MIT](LICENSE). The script contains no code from the port.
+[MIT](LICENSE). The tool contains no code from the port.

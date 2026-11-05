@@ -1,5 +1,12 @@
 # Personal inventory of the Deck's files, its backup and temp file. Never publish.
+deck_inventory.json*
 inventario_deck.json*
+
+# Saved settings (has a folder path from your PC).
+config.json
+
+# Packages built for the Deck (they contain port and game-related files). Never publish.
+packages/
 
 # Python cache
 __pycache__/

@@ -5,6 +5,23 @@ Versions follow [Semantic Versioning](https://semver.org): 0.x means the tool is
 
 Versions before 0.3.1 were never published. Their old internal names (v1, v1.1, v2, v3) are noted in parentheses.
 
+## [0.4.0] - 2026-11-05
+
+### Added
+- On the first run, a window asks for your port folder and the tool remembers it in `config.json`. You no longer edit the code. If the saved folder no longer has `pkp.exe`, it asks again.
+- If there is no inventory yet, a window asks for the PC copy of the Deck's folder.
+- If the window can't open, the tool asks you to paste the folder path in the console.
+- The total time is shown at the end, counted from when the folders are chosen.
+- The tool stops if it is inside the port folder (it would send its own files to the Deck).
+
+### Changed
+- The program is now in English only: messages, file names and code.
+- Files renamed: `actualizar_pokopia.py` → `pokopia_deck_updater.py`, `Actualizar Pokopia.bat` → `Update_Pokopia.bat`, `inventario_deck.json` → `deck_inventory.json`. An existing inventory (and its backup) is renamed and converted automatically the first time, so it doesn't have to be built again.
+- Packages are built in a `packages` folder next to the tool, named `package_<date>`.
+- Questions are answered with `y` or `n`.
+- The port folder must have `pkp.exe` (a folder where Set up was run). An unzipped release is rejected.
+- The instructions shown at the end no longer assume a folder name or a file manager on the Deck.
+
 ## [0.3.1] - 2026-11-05
 
 First public release.
