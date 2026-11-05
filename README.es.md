@@ -1,4 +1,4 @@
-# pokopia-deck-updater
+# Pokopia Deck Updater
 
 Arma un paquete con **solo los archivos que cambiaron** en la instalación del port [Pokopia Recomp](https://github.com/featureJosh/pokopia-recomp) en tu PC, para mandarlo a una Steam Deck sin copiar ~25 GB cada vez y sin sobrescribir la partida ni los ajustes de la Deck.
 
