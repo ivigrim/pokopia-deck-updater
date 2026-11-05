@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-actualizar_pokopia.py  —  versión 3
+actualizar_pokopia.py  —  versión 0.3.1
 
 Arma un paquete con SOLO los archivos del port de Pokopia (featureJosh/pokopia-recomp) que cambiaron,
 para mandarlo a la Steam Deck por LocalSend, sin incluir nunca tus datos protegidos.
@@ -26,6 +26,7 @@ from datetime import datetime   # para ponerle fecha y hora a la carpeta de env�
 from fnmatch import fnmatch     # para comparar nombres con comodines, como "pkp.log*"
 from pathlib import Path        # para manejar rutas de carpetas de forma cómoda
 
+VERSION = "0.3.1"   # súbela en cada versión nueva (y anótala en CHANGELOG.md)
 # ============================================================
 # 1) TUS CARPETAS
 # ============================================================
@@ -220,7 +221,7 @@ def revisar_set_up() -> list:
 
 def main():
     print("=" * 60)
-    print("  Actualizador de Pokopia para Steam Deck")
+    print(f"  Actualizador de Pokopia para Steam Deck  (v{VERSION})")
     print("=" * 60)
     print("Recordatorio: si el launcher pidió Set up, termínalo y abre el juego dos veces antes de esto.\n")
 
